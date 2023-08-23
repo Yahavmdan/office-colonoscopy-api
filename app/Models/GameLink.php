@@ -17,6 +17,7 @@ class GameLink extends Model
         $model->link = $gameLink->get('link');
         $model->category = $gameLink->get('category');
 
+
         return $model->save();
     }
 
