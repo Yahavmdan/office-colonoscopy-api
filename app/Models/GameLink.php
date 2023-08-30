@@ -37,6 +37,8 @@ class GameLink extends Model
         $this->name = $gameLink->get('name');
         $this->link = $gameLink->get('link');
         $this->category = $gameLink->get('category');
+        $this->description = $gameLink->get('description');
+        $this->sub_category = json_encode($gameLink->get('subCategory'));
 
         return $this->save();
     }
