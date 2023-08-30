@@ -12,7 +12,7 @@ class GameLinkRequest extends FormRequest
             'name' => 'required|string',
             'description' => 'required|string',
             'category' => 'required|in:geo,word,movies,other,video-game',
-            'subCategory' => 'required|array',
+            'subCategory' => 'nullable|array',
             'link' => 'required|string',
         ];
     }
