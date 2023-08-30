@@ -14,12 +14,18 @@ class GameLinkController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json(
-            GameLink::query()
-                ->select('name', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
-                ->get()
-                ->groupBy('category')
-        );
+        $gameLinks = GameLink::query()
+            ->select('name', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
+            ->get()
+            ->groupBy('category');
+
+        foreach ($gameLinks as $category => $links) {
+            foreach ($links as &$link) {
+                $link->subCategory = json_decode($link->subCategory);
+            }
+        }
+
+        return response()->json($gameLinks);
     }
 
     public function store(GameLinkRequest $request): JsonResponse

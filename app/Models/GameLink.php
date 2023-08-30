@@ -14,8 +14,10 @@ class GameLink extends Model
     {
         $model = new self();
         $model->name = $gameLink->get('name');
+        $model->description = $gameLink->get('description');
         $model->link = $gameLink->get('link');
         $model->category = $gameLink->get('category');
+        $model->sub_category = json_encode($gameLink->get('subCategory'));
 
 
         return $model->save();
