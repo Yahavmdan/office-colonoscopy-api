@@ -8,23 +8,36 @@ use App\Models\GameLink;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class GameLinkController extends Controller
 {
-    public function index(): JsonResponse
+    public function getCategories(): JsonResponse
     {
         $gameLinks = GameLink::query()
+            ->select('category', DB::raw('SUM(click_count) as totalClicks'), DB::raw('COUNT(*) as itemCount'))
+            ->groupBy('category')
+            ->get();
+
+        return response()->json($gameLinks);
+    }
+
+    public function getLinksByCategory(string $category): JsonResponse
+    {
+        $gameLinks = GameLink::query()
+            ->where('category', $category)
             ->select('name', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
             ->get()
             ->groupBy('category');
 
-        foreach ($gameLinks as $category => $links) {
-            foreach ($links as &$link) {
+        foreach ($gameLinks as $links) {
+            foreach ($links as $link) {
                 $link->subCategory = json_decode($link->subCategory);
             }
         }
 
+        $gameLinks = collect($gameLinks)->collapse();
         return response()->json($gameLinks);
     }
 
