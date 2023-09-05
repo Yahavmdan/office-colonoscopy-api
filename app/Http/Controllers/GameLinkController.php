@@ -20,6 +20,9 @@ class GameLinkController extends Controller
             ->groupBy('category')
             ->get();
 
+        foreach ($gameLinks as $link) {
+            $link->totalClicks = (int) $link->totalClicks;
+        }
         return response()->json($gameLinks);
     }
 

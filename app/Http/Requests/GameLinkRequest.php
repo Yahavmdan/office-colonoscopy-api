@@ -11,7 +11,7 @@ class GameLinkRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'required|string',
-            'category' => 'required|in:geo,word,movies,other,video-game',
+            'category' => 'required|in:geo,word,movies,other,video-games',
             'subCategory' => 'nullable|array',
             'link' => 'required|string',
         ];
