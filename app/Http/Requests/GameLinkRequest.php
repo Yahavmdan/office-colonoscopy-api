@@ -16,4 +16,5 @@ class GameLinkRequest extends FormRequest
             'link' => 'required|string',
         ];
     }
+
 }
