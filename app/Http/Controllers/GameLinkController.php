@@ -23,14 +23,24 @@ class GameLinkController extends Controller
         foreach ($gameLinks as $link) {
             $link->totalClicks = (int) $link->totalClicks;
         }
+
+        $gameLinks->prepend([
+            'category' => 'all',
+            'itemCount' => $gameLinks->sum('itemCount'),
+            'totalClicks' => $gameLinks->sum('totalClicks')
+        ]);
         return response()->json($gameLinks);
     }
 
     public function getLinksByCategory(string $category): JsonResponse
     {
-        $gameLinks = GameLink::query()
-            ->where('category', $category)
-            ->select('name', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
+        $isAll = $category === 'all';
+        $gameLinks = GameLink::query();
+        if (! $isAll) {
+            $gameLinks = $gameLinks->where('category', $category);
+        }
+        $gameLinks = $gameLinks->select('name', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
+            ->orderByDesc('click_count')
             ->get()
             ->groupBy('category');
 
