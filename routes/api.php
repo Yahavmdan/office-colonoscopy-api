@@ -21,6 +21,7 @@ Route::post('auth/login', [GameLinkController::class, 'login']);
 Route::put('gameLink/increase/{gameLink}', [GameLinkController::class, 'increaseClickCount']);
 Route::put('gameLink/increaseByCategory', [GameLinkController::class, 'increaseClickCountByCategory']);
 
+
 Route::resource('gameLink', GameLinkController::class)
     ->except(['index'])
     ->middleware(AuthMiddleware::class);
