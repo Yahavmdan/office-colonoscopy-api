@@ -35,22 +35,12 @@ class GameLinkController extends Controller
     public function getLinksByCategory(string $category): JsonResponse
     {
         $isAll = $category === 'all';
-        $gameLinks = GameLink::query();
-        if (! $isAll) {
-            $gameLinks = $gameLinks->where('category', $category);
-        }
-        $gameLinks = $gameLinks->select('name', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
-            ->orderByDesc('click_count')
-            ->get()
-            ->groupBy('category');
-
-        foreach ($gameLinks as $links) {
-            foreach ($links as $link) {
-                $link->subCategory = json_decode($link->subCategory);
-            }
+        if ($isAll) {
+            $gameLinks = GameLink::getAll();
+        } else {
+            $gameLinks = GameLink::getByCategory($category);
         }
 
-        $gameLinks = collect($gameLinks)->collapse();
         return response()->json($gameLinks);
     }
 

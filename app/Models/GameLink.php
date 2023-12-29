@@ -32,6 +32,35 @@ class GameLink extends Model
         }
     }
 
+    public static function getAll()
+    {
+        $links = self::query()->select('name', 'image', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
+            ->orderByDesc('click_count')
+            ->get();
+
+        foreach ($links as $link) {
+            $link->subCategory = json_decode($link->subCategory);
+        }
+        return $links;
+    }
+
+    public static function getByCategory($category): Collection
+    {
+        $gameLinks = self::query()->where('category', $category)
+            ->select('name', 'image', 'category', 'link', 'description', 'sub_category as subCategory', 'click_count as clickCount', 'id')
+            ->orderByDesc('click_count')
+            ->get()
+            ->groupBy('category');
+
+        foreach ($gameLinks as $links) {
+            foreach ($links as $link) {
+                $link->subCategory = json_decode($link->subCategory);
+            }
+        }
+
+        return collect($gameLinks)->collapse();
+    }
+
     public function updateInstance(Collection $gameLink): bool
     {
         $this->name = $gameLink->get('name');
